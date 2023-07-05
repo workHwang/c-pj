@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>예금 이자 계산</title>
+    <script>
+        function calculateInterest() {
+            var principal = parseInt(document.getElementById("principal").value);
+            var interestRate = parseFloat(document.getElementById("interestRate").value);
+            var years = parseInt(document.getElementById("years").value);
+
+            // 값이 유효한지 확인
+            if (isNaN(principal) || isNaN(interestRate) || isNaN(years)) {
+                alert("올바른 값을 입력하세요.");
+                return;
+            }
+
+            // 단리 이자 계산
+            var interest = (principal * interestRate * years).toFixed(0);
+            var afterTex = (interest * 0.846).toFixed(0);
+						var totalAmount = parseInt(principal) + parseInt(interest);
+						
+            // 결과 출력
+            document.getElementById("bfResult").innerHTML = "세전 이자: " + interest;
+						document.getElementById("afResult").innerHTML = "세후 이자: " + afterTex;
+            document.getElementById("totalAmount").innerHTML = "최종 금액: " + totalAmount;
+        }
+    </script>
+</head>
+<body>
+    <h1>예금 이자 계산</h1>
+		<h1>단리 계산</h1>
+    <form>
+        <label for="principal">원금:</label>
+        <input type="number" id="principal" step="0.01" required><br>
+
+        <label for="interestRate">이자율:</label>
+        <input type="number" id="interestRate" step="0.01" required><br>
+
+        <label for="years">기간(년):</label>
+        <input type="number" id="years" required><br>
+
+        <button type="button" onclick="calculateInterest()">계산</button>
+    </form>
+
+    <div id="bfResult"></div>
+    <div id="afResult"></div>
+    <div id="totalAmount"></div>
+</body>
+</html>
