@@ -6,7 +6,7 @@
     <script>
         function calculateInterest() {
             var principal = parseInt(document.getElementById("principal").value);
-            var interestRate = parseFloat(document.getElementById("interestRate").value);
+            var interestRate = parseFloat(document.getElementById("interestRate").value)/100;
             var years = parseInt(document.getElementById("years").value);
 
             // 값이 유효한지 확인
@@ -18,11 +18,11 @@
             // 단리 이자 계산
             var interest = (principal * interestRate * years).toFixed(0);
             var afterTex = (interest * 0.846).toFixed(0);
-						var totalAmount = parseInt(principal) + parseInt(interest);
+	    	var totalAmount = parseInt(principal) + parseInt(interest);
 						
             // 결과 출력
             document.getElementById("bfResult").innerHTML = "세전 이자: " + interest;
-						document.getElementById("afResult").innerHTML = "세후 이자: " + afterTex;
+			document.getElementById("afResult").innerHTML = "세후 이자: " + afterTex;
             document.getElementById("totalAmount").innerHTML = "최종 금액: " + totalAmount;
         }
     </script>
