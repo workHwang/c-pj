@@ -206,10 +206,11 @@
       
         var result = "세전 이자: " + totalInterest.toFixed(2) + " 원<br>";
         result += "세후 이자: " + taxableInterest.toFixed(2) + " 원<br>";
-        result += "만기 지급액: " + totalAmount.toFixed(2) + " 원";
+        result += "만기 지급액: " + (totalAmount + taxableInterest).toFixed(2) + " 원";
       
         return result;
       }
+
 
 
 
