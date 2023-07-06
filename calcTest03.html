@@ -198,7 +198,34 @@
         
         return result;
       }
-
+      
+      //444
+      function calculateInstallment(installment, interest, months, interestType, taxRate) {
+        var totalInterest = 0;
+        var totalAmount = installment * months;
+        
+        if (interestType === "simple") {
+          totalInterest = (totalAmount * interest * months) / 240000;
+        } else if (interestType === "compound") {
+          for (var i = 0; i < months; i++) {
+            var monthlyInterest = (totalAmount * interest) / 1200;
+            totalAmount += monthlyInterest;
+            totalInterest += monthlyInterest;
+          }
+          totalInterest -= installment * months;
+        }
+        
+        var taxableInterest = totalInterest;
+        if (taxRate > 0) {
+          taxableInterest = totalInterest - (totalInterest * (taxRate / 100));
+        }
+        
+        var result = "세전 이자: " + totalInterest.toFixed(2) + " 원<br>";
+        result += "세후 이자: " + taxableInterest.toFixed(2) + " 원<br>";
+        result += "만기 지급액: " + totalAmount.toFixed(2) + " 원";
+        
+        return result;
+      }
 
     });
   </script>
