@@ -151,24 +151,56 @@
       return result;
     }
     
+    // function calculateInstallment(amount, interest, months, interestType, taxRate) {
+    //   var totalInterest = 0;
+    //   var totalAmount = 0;
+    
+    //   if (interestType === "simple") {
+    //     var monthlyInterest = (amount * interest) / 1200;
+    //     totalInterest = monthlyInterest * months;
+    //     totalAmount = amount + totalInterest;
+    //   } else if (interestType === "compound") {
+    //     for (var i = 0; i < months; i++) {
+    //       var monthlyInterest = (amount * interest) / 1200;
+    //       amount += monthlyInterest;
+    //       totalInterest += monthlyInterest;
+    //     }
+    //     totalAmount = amount;
+    //   }
+
+    //     // 세금계산
+    //   var taxableInterest = totalInterest;
+    //   if (taxRate > 0) {
+    //     taxableInterest = totalInterest - (totalInterest * (taxRate / 100));
+    //   }
+    
+    //   var result = "세전 이자: " + totalInterest.toFixed(2) + " 원<br>";
+    //   result += "세후 이자: " + taxableInterest.toFixed(2) + " 원<br>";
+    //   result += "만기 지급액: " + (amount + taxableInterest).toFixed(2) + " 원";
+    
+    //   return result;
+    // }
+
+//////////
     function calculateInstallment(amount, interest, months, interestType, taxRate) {
       var totalInterest = 0;
-      var totalAmount = 0;
+      var totalAmount = amount;
     
-      if (interestType === "simple") {
-        var monthlyInterest = (amount * interest) / 1200;
-        totalInterest = monthlyInterest * months;
-        totalAmount = amount + totalInterest;
-      } else if (interestType === "compound") {
+      if (interestType === "simple") {//단리
         for (var i = 0; i < months; i++) {
-          var monthlyInterest = (amount * interest) / 1200;
-          amount += monthlyInterest;
+          var monthlyInterest = (totalAmount * interest) / 1200;
+          totalInterest += monthlyInterest;
+          totalAmount += monthlyInterest;
+        }
+      } else if (interestType === "compound") {//복리
+        for (var i = 0; i < months; i++) {
+          var monthlyInterest = (totalAmount * interest) / 1200;
+          totalAmount += monthlyInterest;
           totalInterest += monthlyInterest;
         }
-        totalAmount = amount;
       }
 
-        // 세금계산
+      //세금계산
       var taxableInterest = totalInterest;
       if (taxRate > 0) {
         taxableInterest = totalInterest - (totalInterest * (taxRate / 100));
@@ -176,12 +208,10 @@
     
       var result = "세전 이자: " + totalInterest.toFixed(2) + " 원<br>";
       result += "세후 이자: " + taxableInterest.toFixed(2) + " 원<br>";
-      result += "만기 지급액: " + (amount + taxableInterest).toFixed(2) + " 원";
+      result += "만기 지급액: " + totalAmount.toFixed(2) + " 원";
     
       return result;
     }
-
-
 
 
       
