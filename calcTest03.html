@@ -157,8 +157,12 @@
           totalAmount = (installment * months) + totalInterest;
         } else if (interestType === "compound") {
           var monthlyInterestRate = interest / 1200;
-          totalAmount = installment * ((Math.pow((1 + monthlyInterestRate), months) - 1) / monthlyInterestRate);
-          totalInterest = totalAmount - (installment * months);
+          var balance = 0;
+          for (var i = 0; i < months; i++) {
+            balance += installment;
+            totalInterest += balance * monthlyInterestRate;
+          }
+          totalAmount = balance;
         }
       
         var taxableInterest = totalInterest;
@@ -172,6 +176,7 @@
       
         return result;
       }
+
 
 
     });
