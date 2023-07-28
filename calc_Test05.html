@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>월배당 목표 계산기</title>
+</head>
+<body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function calc(월목표, 월적립, 이율) {
+            let month = 0;
+            let value = 0;
+            let 월배당 = 0;
+
+            while (월배당 < 월목표) {
+                value += 월적립;
+                월배당 = Math.floor((value * (이율 / 100) / 12) * 0.846);
+                value += 월배당;
+                month++;
+            }
+
+            // 결과를 화면에 출력
+            let result = "필요기간 : " + month + "개월, " + "원금 : " + numberWithCommas(value) + "원";
+            console.log(result);
+            document.getElementById('result').textContent = result;
+        }
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        $(document).ready(function () {
+            $('#calculateBtn').click(function () {
+                // 사용자로부터 입력받은 값들을 가져옴
+                let 월목표 = parseInt($('#월목표').val());
+                let 월적립 = parseInt($('#월적립').val());
+                let 이율 = parseFloat($('#이율').val());
+
+                // calc 함수 호출하여 결과를 화면에 출력
+                calc(월목표, 월적립, 이율);
+            });
+        });
+    </script>
+
+    <label for="월목표">월 목표 배당금: </label>
+    <input type="number" id="월목표"><br>
+    <label for="월적립">월 적립액: </label>
+    <input type="number" id="월적립"><br>
+    <label for="이율">배당률: </label>
+    <input type="number" id="이율"><br>
+    <button id="calculateBtn">계산하기</button>
+
+    <div id="result"></div>
+</body>
+</html>
