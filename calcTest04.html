@@ -26,7 +26,7 @@
                 value += 월배당;
                 month++;
 
-                tableData.push([month, numberWithCommas(value) + '원', numberWithCommas(월배당) + '원']);
+                tableData.push(["월": month, "보유금": numberWithCommas(value) + '원', "월배당": numberWithCommas(월배당) + '원']);
             }
             console.log("tableData::", tableData);
 
@@ -56,8 +56,8 @@
                 el: document.getElementById('resultTable'),
                 columns: [
                     { header: '월', name: '월' },
-                    { header: '주식 보유액', name: '주식 보유액' },
-                    { header: '월 배당금', name: '월 배당금' }
+                    { header: '주식 보유액', name: '보유금' },
+                    { header: '월 배당금', name: '월배당' }
                 ],
                 data: {
                     rows: dataSource.data.rows
