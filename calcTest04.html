@@ -48,11 +48,12 @@
             const grid = new tui.Grid({
               el: document.getElementById('resultTable'),
               columns: [
-                { header: '월', name: '월' },
-                { header: '주식 보유액', name: '주식 보유액' },
-                { header: '월 배당금', name: '월 배당금' }
+                { header: '월', name: month },
+                { header: '주식 보유액', name: value },
+                { header: '월 배당금', name: divident }
               ],
               data: gridData,
+              width: 'auto',
               scrollX: false,
               pageOptions: {
                 useClient: true,
