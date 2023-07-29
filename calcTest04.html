@@ -41,7 +41,6 @@
             console.log(result);
             $('#result').text(result);
 
-            grid.setData(gridData);
             
             const grid = new tui.Grid({
               el: document.getElementById('resultTable'),
@@ -60,6 +59,7 @@
                 visiblePages: 10
               }
             });
+            grid.setData(gridData);
 
             
         }
