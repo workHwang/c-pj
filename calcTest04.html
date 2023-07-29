@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="format-detection" content="telephone=no, address=no, email=no">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>월배당 목표 계산기</title>
+    <title>월 배당금 목표 계산기</title>
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-        <!-- TUI -->
+    <!-- TUI -->
     <link rel="stylesheet" href="https://uicdn.toast.com/tui-grid/latest/tui-grid.css">
     <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/v3.3.0/tui-pagination.css">
 
@@ -20,7 +20,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
-        <!-- TUI -->
+    <!-- TUI -->
     <script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/v1.5.0/tui-code-snippet.js"></script>
     <script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/v3.3.0/tui-pagination.js"></script>
     <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
@@ -34,42 +34,43 @@
     </style>
 
     <script>
-        function calc(초기자본, 월적립, 월목표, 배당률) {
-            let month = 0;
-            let value = 0;
-            let 월배당 = 0;
+        /**
+         * initInvst    : 초기 투자금
+         * monthlyInvst : 월 투자금
+         * dividendGoal : 목표 배당금
+         * dividendRate : 배당률
+        */
+        function calc(initInvst, monthlyInvst, dividendGoal, dividendRate) {
+            let months = 0;                 // 개월 수
+            let totalInvst = 0;             // 총 투자금
+            let monthlyDividend = 0;        // 월 배당금
 
-            월적립 ? isNaN(월적립) == true : 0;
+            monthlyInvst ? isNaN(monthlyInvst) == true : 0;
 
-            if(초기자본 > 0) {
-                value = 초기자본;
-            }
-            console.log("값:: ", 초기자본, 월적립, 월목표, 배당률);
-            console.log("value:: ", value);
+            if (initInvst > 0) totalInvst = initInvst;
+
             $('#resultTable').html('');
-
             const gridData = [];
-
-            if (월적립 != 0 && isNaN(월적립) == false) {
-                while (월배당 < 월목표 && value < 1e12) {
-                    value += 월적립;
-                    if (value == 0) {
-                        월배당 = 0;
+            console.log(initInvst, monthlyInvst, dividendGoal, dividendRate);
+            if (monthlyInvst != 0 && isNaN(monthlyInvst) == false) {
+                while (monthlyDividend < dividendGoal && (months > 1200 || totalInvst < 1e12)) {
+                    totalInvst += monthlyInvst;
+                    console.log(initInvst, monthlyInvst, dividendGoal, dividendRate);
+                    if (totalInvst == 0) { 
+                        monthlyDividend = 0;
                     } else {
-                        월배당 = Math.floor((value * (배당률 / 100) / 12) * 0.846);
+                        monthlyDividend = Math.floor((totalInvst * (dividendRate / 100) / 12) * 0.846); 
                     }
-                    value += 월배당;
-                    month++;
+                    totalInvst += monthlyDividend;  
+                    months++;
 
-                    gridData.push({ month: month, value: numberWithCommas(value) + '원', divident: numberWithCommas(월배당) + '원' });
+                    gridData.push({ months: months, totalInvst: numberWithCommas(totalInvst) + '원',   divident: numberWithCommas(monthlyDividend) + '원', dividentY: numberWithCommas(monthlyDividend*12) + '원' });
                 }
             }
-
-
-            // 결과를 화면에 출력
-            let result = "필요기간 : " + month + "개월, " + "원금 : " + numberWithCommas(value) + "원";
-            console.log(result);
-            $('#result').text(result);
+            console.log("gridData:: ", gridData);
+            let result = '<span>필요 기간 : ' + months + '개월</span><br>';
+                result +='<span>총 투자금 : ' + numberWithCommas(totalInvst) + '원</span>';
+            $('#result').html(result);
 
             tui.Grid.applyTheme('clean');
 
@@ -77,15 +78,16 @@
                 el: document.getElementById('resultTable'),
                 contextMenu: null,
                 columns: [
-                    { header: '월', name: 'month', width: '60', align: 'center' },
-                    { header: '주식 보유액', name: 'value', align: 'center' },
-                    { header: '월 배당금', name: 'divident', align: 'center' }
+                    { header: '월',             name: 'months',     align: 'center',  width: '60'}, 
+                    { header: '총 투자금',    name: 'totalInvst', align: 'center' }, 
+                    { header: '월 평균 배당금',      name: 'divident',   align: 'center' }, 
+                    { header: '연간 배당금',      name: 'dividentY',   align: 'center' }
                 ],
                 data: gridData,
-                rowHeight: 50,
-                bodyHeight: 500,
+                rowHeight: 45,
+                bodyHeight: 450,
                 header: {
-                    height: 50
+                    height: 45
                 },
                 scrollX: false,
                 scrollY: false,
@@ -95,48 +97,45 @@
                     visiblePages: 10,
                 }
             });
-
+            $('#resultArea').show();
         }
-        function checkValid(초기자본, 월적립, 월목표, 배당률) {
-            $('#초기자본, #월적립, #월목표, #배당률').closest('div').find('#error').css('display', 'none');
-            
-            
-            if (isNaN(초기자본) || 초기자본 < 0) {
-                // $('#초기자본').closest('div').find('#error').css('display', 'block');
-                // $('#초기자본').val('').focus();\
-                $('#초기자본').val('0');
+
+        function checkValid(initInvst, monthlyInvst, dividendGoal, dividendRate) {
+            $('#initInvst, #monthlyInvst, #dividendGoal, #dividendRate').closest('div').find('#error').css('display', 'none');
+            $('#resultArea').hide();
+
+            if (isNaN(initInvst) || initInvst < 0) {
+                $('#initInvst').val('0');
                 $('#result').html('');
                 $('#resultTable').html('');
                 return false;
             }
 
-            if (isNaN(월적립) || 월적립 < 0) {
-                $('#월적립').closest('div').find('#error').css('display', 'block');
-                $('#월적립').val('').focus();
+            if (isNaN(monthlyInvst) || monthlyInvst < 0) {
+                $('#monthlyInvst').closest('div').find('#error').css('display', 'block');
+                $('#monthlyInvst').val('').focus();
                 $('#result').html('');
                 $('#resultTable').html('');
                 return false;
             }
 
-            if (isNaN(월목표) || 월목표 < 0) {
-                $('#월목표').closest('div').find('#error').css('display', 'block');
-                $('#월목표').val('').focus();
+            if (isNaN(dividendGoal) || dividendGoal < 0) {
+                $('#dividendGoal').closest('div').find('#error').css('display', 'block');
+                $('#dividendGoal').val('').focus();
                 $('#result').html('');
                 $('#resultTable').html('');
                 return false;
             }
 
-            if (isNaN(배당률) || 배당률 <= 0) {
-                $('#배당률').closest('div').find('#error').css('display', 'block');
-                $('#배당률').val('').focus();
+            if (isNaN(dividendRate) || dividendRate <= 0) {
+                $('#dividendRate').closest('div').find('#error').css('display', 'block');
+                $('#dividendRate').val('').focus();
                 $('#result').html('');
                 $('#resultTable').html('');
                 return false;
             }
 
             return true;
-
-
         }
         function numberWithCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -144,94 +143,89 @@
 
         $(document).ready(function () {
             $('#calculateBtn').click(function () {
-                // 사용자로부터 입력받은 값들을 가져옴
-                let 초기자본 = parseInt($('#초기자본').val());
-                let 월적립 = parseInt($('#월적립').val());
-                let 월목표 = parseInt($('#월목표').val());
-                let 배당률 = parseFloat($('#배당률').val());
+                let initInvst = parseInt($('#initInvst').val());
+                let monthlyInvst = parseInt($('#monthlyInvst').val());
+                let dividendGoal = parseInt($('#dividendGoal').val());
+                let dividendRate = parseFloat($('#dividendRate').val());
 
-                // calc 함수 호출하여 결과를 화면에 출력
-                if (checkValid(초기자본, 월적립, 월목표, 배당률)) calc(초기자본, 월적립, 월목표, 배당률);
+                if (checkValid(initInvst, monthlyInvst, dividendGoal, dividendRate)) calc(initInvst, monthlyInvst, dividendGoal, dividendRate);
             });
         });
     </script>
 </head>
 
 <body>
-    <div class="container">
-        <h1 class="container-fluid mt-5">월 배당 목표 계산기</h1><br><br>
-
-
+    <div class="container" style="width: 700px;">
+        <h1 class="container-fluid mt-5">월 배당 목표 계산기</h1>
+        <hr class="border border-primary border-3 opacity-75">
         <!-- main section-->
 
-        <!-- 추후 섹션 지정시 설정. -->
         <!-- <div class="bg-primary-subtle pt-3" id="mainContainer"> -->
         <div class="pt-3" id="mainContainer">
 
             <!-- input -->
-            <div class="input-group mb-3 w-50">
-                <label for="초기자본" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+            <div class="input-group mb-3 ">
+                <label for="initInvst" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
                     <span>초기 자본</span>
                 </label>
-                <input type="number" id="초기자본" class="form-control">
+                <input type="number" id="initInvst" class="form-control">
                 <div class="input-group mt-1">
                     <span id="error" class="text-danger" style="display: none;">
                         초기 자본을 올바르게 입력해주세요.
                     </span>
                 </div>
             </div>
-
-            <div class="input-group mb-3 w-50">
-                <label for="월적립" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+            <div class="input-group mb-3 w-100">
+                <label for="monthlyInvst" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
                     <span>월 적립액</span>
                 </label>
-                <input type="number" id="월적립" class="form-control">
+                <input type="number" id="monthlyInvst" class="form-control">
                 <div class="input-group mt-1">
                     <span id="error" class="text-danger" style="display: none;">
                         월 적립액을 올바르게 입력해주세요.
                     </span>
                 </div>
             </div>
-
-            <div class="input-group mb-3 w-50">
-                <label for="월목표" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+            <div class="input-group mb-3 w-100">
+                <label for="dividendGoal" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
                     <span>월 목표 배당금</span>
                 </label>
-                <input type="number" id="월목표" class="form-control">
+                <input type="number" id="dividendGoal" class="form-control ">
                 <div class="input-group mt-1">
                     <span id="error" class="text-danger" style="display: none;">
                         월 목표 배당금을 올바르게 입력해주세요.
                     </span>
                 </div>
             </div>
-
-            <div class="input-group mb-3 w-50">
-                <label for="배당률" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+            <div class="input-group mb-3 w-100">
+                <label for="dividendRate" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
                     <span>배당률</span>
                 </label>
-                <input type="number" id="배당률" class="form-control">
+                <input type="number" id="dividendRate" class="form-control">
                 <div class="input-group mt-1">
                     <span id="error" class="text-danger" style="display: none;">
-                        배당률 올바르게 입력해주세요.
+                        배당률을 올바르게 입력해주세요.
                     </span>
                 </div>
             </div>
             <!-- //input -->
-
-            <div class="d-grid gap-2 col-6 w-50">
+            <div class="d-grid gap-2 col-6 w-100">
                 <button id="calculateBtn" class="btn btn-primary btn-lg">계산하기</button>
             </div>
-            <br><br>
-            <div id="result"></div>
-            <br><br>
-            <table id="resultTable" class="w-50"></table>
-
+            
+            <div id="resultArea" style="display: none;">
+                <h2 class="container-fluid mt-5">결과</h2>
+                <hr class="border border-primary border-3 opacity-75">
+                
+                <div id="result" class="mt-2"></div>
+                <br><br>
+                <table id="resultTable" class="w-100"></table>
+            </div>
+                
         </div>
 
-        <!-- ad section-->
-        <!-- <div class="bg-secondary-subtle w-25" id="adContainer">
-            asdasdas
-        </div> -->
+        <!-- second section-->
+        <!-- <div class="bg-secondary-subtle w-25" id="secondContainer"></div> -->
     </div>
 </body>
 
