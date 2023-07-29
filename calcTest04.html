@@ -41,7 +41,7 @@
             console.log(result);
             $('#result').text(result);
 
-
+            grid.setData(gridData);
             
             const grid = new tui.Grid({
               el: document.getElementById('resultTable'),
@@ -51,7 +51,7 @@
                 { header: '월 배당금', name: 'divident' }
               ],
               data: gridData,
-              width: 'auto', 
+              width: '100%', 
               scrollX: false,
               scrollX: false,
               pageOptions: {
