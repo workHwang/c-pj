@@ -35,47 +35,47 @@
             console.log(result);
             $('#result').text(result);
 
-            // const dataSource = {
-            //   api: {
-            //     readData: {
-            //       url: '/api/v1/stocks',
-            //       method: 'GET',
-            //       params: {
-            //         page: 1,
-            //         size: 10
-            //       }
-            //     }
-            //   },
-            //   data: {
-            //     rows: [
-            //       {
-            //         month: 1,
-            //         value: 1000000,
-            //         dividend: 10000
-            //       },
-            //       {
-            //         month: 2,
-            //         value: 2000000,
-            //         dividend: 20000
-            //       },
-            //       {
-            //         month: 3,
-            //         value: 3000000,
-            //         dividend: 30000
-            //       }
-            //     ]
-            //   }
-            // };
+            const dataSource = {
+              api: {
+                readData: {
+                  url: '/api/v1/stocks',
+                  method: 'calc',
+                  params: {
+                    page: 1,
+                    size: 10
+                  }
+                }
+              },
+              data: {
+                rows: [
+                  {
+                    month: month,
+                    value: numberWithCommas(value),
+                    월배당: numberWithCommas(월배당)
+                  },
+                  {
+                    month: month,
+                    value: numberWithCommas(value),
+                    월배당: numberWithCommas(월배당)
+                  },
+                  {
+                    month: month,
+                    value: numberWithCommas(value),
+                    월배당: numberWithCommas(월배당)
+                  }
+                ]
+              }
+            };
             const grid = new tui.Grid({
               el: document.getElementById('resultTable'),
               columns: [
-                { header: '월', name: month },
-                { header: '주식 보유액', name: numberWithCommas(value) },
-                { header: '월 배당금', name: numberWithCommas(월배당) }
+                { header: '월', name: '월' },
+                { header: '주식 보유액', name: '주식 보유액' },
+                { header: '월 배당금', name: '월 배당금' }
               ],
-              // data: {
-              //   rows: dataSource.data.rows
-              // },
+              data: {
+                rows: dataSource.data.rows
+              },
               scrollX: false,
               pageOptions: {
                 useClient: true,
