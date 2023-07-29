@@ -40,7 +40,10 @@
             let result = "필요기간 : " + month + "개월, " + "원금 : " + numberWithCommas(value) + "원";
             console.log(result);
             $('#result').text(result);
-
+            
+            // 그리드를 갱신합니다.
+            grid.clear();
+            
             const grid = new tui.Grid({
               el: document.getElementById('resultTable'),
               columns: [
@@ -59,8 +62,7 @@
               }
             });
             
-            // 그리드를 갱신합니다.
-            grid.reloadData();
+
 
         }
 
