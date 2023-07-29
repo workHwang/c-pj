@@ -11,17 +11,19 @@
             let value = 0;
             let 월배당 = 0;
 
+            let tableContent = "<tr><th>월</th><th>주식 보유액</th><th>월 배당금</th></tr>";
+
             while (월배당 < 월목표) {
                 value += 월적립;
                 월배당 = Math.floor((value * (이율 / 100) / 12) * 0.846);
                 value += 월배당;
                 month++;
+
+                tableContent += `<tr><td>${month}</td><td>${numberWithCommas(value)}원</td><td>${numberWithCommas(월배당)}원</td></tr>`;
             }
 
-            // 결과를 화면에 출력
-            let result = "필요기간 : " + month + "개월, " + "원금 : " + numberWithCommas(value) + "원";
-            console.log(result);
-            document.getElementById('result').textContent = result;
+            // 결과를 테이블에 출력
+            $('#resultTable').html(tableContent);
         }
 
         function numberWithCommas(x) {
@@ -49,6 +51,6 @@
     <input type="number" id="이율"><br>
     <button id="calculateBtn">계산하기</button>
 
-    <div id="result"></div>
+    <table id="resultTable"></table>
 </body>
 </html>
