@@ -18,7 +18,9 @@
             let month = 0;
             let value = 0;
             let 월배당 = 0;
+            $('#resultTable').html('');
 
+            
             let tableContent = "<tr><th>월</th><th>주식 보유액</th><th>월 배당금</th></tr>";
 
             const gridData = [];
@@ -40,9 +42,6 @@
             let result = "필요기간 : " + month + "개월, " + "원금 : " + numberWithCommas(value) + "원";
             console.log(result);
             $('#result').text(result);
-            
-            // 그리드를 갱신합니다.
-            grid.clear();
             
             const grid = new tui.Grid({
               el: document.getElementById('resultTable'),
