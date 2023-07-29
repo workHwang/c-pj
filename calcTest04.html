@@ -4,13 +4,12 @@
     <title>월배당 목표 계산기</title>
     <!-- CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui-grid/latest/tui-grid.css">
 
     <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.19.0/minified.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 
     <script>
         function calc(월목표, 월적립, 이율) {
@@ -29,19 +28,23 @@
 
                 tableData.push([month, numberWithCommas(value) + '원', numberWithCommas(월배당) + '원']);
             }
-            console.log("tableData::" , tableData);
-            
+            console.log("tableData::", tableData);
+
             // 결과를 화면에 출력
             let result = "필요기간 : " + month + "개월, " + "원금 : " + numberWithCommas(value) + "원";
             console.log(result);
             $('#result').text(result);
-            
+
             // TOAST UI Grid 생성
             const grid = new tui.Grid({
                 el: document.getElementById('resultTable'),
+                columns: [
+                    { header: '월', name: '월' },
+                    { header: '주식 보유액', name: '주식 보유액' },
+                    { header: '월 배당금', name: '월 배당금' }
+                ],
                 data: {
-                    fields: ['월', '주식 보유액', '월 배당금'],
-                    data: tableData
+                    rows: tableData
                 },
                 scrollX: false,
                 pageOptions: {
@@ -53,9 +56,9 @@
         }
 
         function numberWithCommas(x) {
-            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");ㄴ
         }
-        
+
         $(document).ready(function () {
             $('#calculateBtn').click(function () {
                 // 사용자로부터 입력받은 값들을 가져옴
