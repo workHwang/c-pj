@@ -1,71 +1,143 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no, address=no, email=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>월배당 목표 계산기</title>
     <!-- CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+        <!-- TUI -->
     <link rel="stylesheet" href="https://uicdn.toast.com/tui-grid/latest/tui-grid.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/v3.3.0/tui-pagination.css">
 
     <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.19.0/minified.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+        <!-- TUI -->
     <script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/v1.5.0/tui-code-snippet.js"></script>
     <script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/v3.3.0/tui-pagination.js"></script>
     <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+
     <script>
-        function calc(월목표, 월적립, 이율) {
+        function calc(초기자본, 월적립, 월목표, 배당률) {
             let month = 0;
             let value = 0;
             let 월배당 = 0;
+
+            월적립 ? isNaN(월적립) == true : 0;
+
+            if(초기자본 > 0) {
+                value = 초기자본;
+            }
+            console.log("값:: ", 초기자본, 월적립, 월목표, 배당률);
+            console.log("value:: ", value);
             $('#resultTable').html('');
 
-            
-            let tableContent = "<tr><th>월</th><th>주식 보유액</th><th>월 배당금</th></tr>";
-
             const gridData = [];
-            
-            while (월배당 < 월목표) {
-                value += 월적립;
-                월배당 = Math.floor((value * (이율 / 100) / 12) * 0.846);
-                value += 월배당;
-                month++;
 
-                tableContent += `<tr><td>${month}</td><td>${numberWithCommas(value)}원</td><td>${numberWithCommas(월배당)}원</td></tr>`;
-                gridData.push({month: month, value: numberWithCommas(value)+'원', divident: numberWithCommas(월배당)+'원'});
+            if (월적립 != 0 && isNaN(월적립) == false) {
+                while (월배당 < 월목표 && value < 1e12) {
+                    value += 월적립;
+                    if (value == 0) {
+                        월배당 = 0;
+                    } else {
+                        월배당 = Math.floor((value * (배당률 / 100) / 12) * 0.846);
+                    }
+                    value += 월배당;
+                    month++;
+
+                    gridData.push({ month: month, value: numberWithCommas(value) + '원', divident: numberWithCommas(월배당) + '원' });
+                }
             }
-            
-            // 결과를 테이블에 출력
-            // $('#resultTable').html(tableContent);
-            
+
+
             // 결과를 화면에 출력
             let result = "필요기간 : " + month + "개월, " + "원금 : " + numberWithCommas(value) + "원";
             console.log(result);
             $('#result').text(result);
-            
+
+            tui.Grid.applyTheme('clean');
+
             const grid = new tui.Grid({
-              el: document.getElementById('resultTable'),
-              columns: [
-                { header: '월', name: 'month' },
-                { header: '주식 보유액', name: 'value' },
-                { header: '월 배당금', name: 'divident' }
-              ],
-              data: gridData,
-              width: '100%', 
-              scrollX: false,
-              scrollX: false,
-              pageOptions: {
-                useClient: true,
-                perPage: 10,
-                visiblePages: 10
-              }
+                el: document.getElementById('resultTable'),
+                contextMenu: null,
+                columns: [
+                    { header: '월', name: 'month', width: '60', align: 'center' },
+                    { header: '주식 보유액', name: 'value', align: 'center' },
+                    { header: '월 배당금', name: 'divident', align: 'center' }
+                ],
+                data: gridData,
+                rowHeight: 50,
+                bodyHeight: 500,
+                header: {
+                    height: 50
+                },
+                scrollX: false,
+                scrollY: false,
+                pageOptions: {
+                    useClient: true,
+                    perPage: 10,
+                    visiblePages: 10,
+                }
             });
+
+        }
+        function checkValid(초기자본, 월적립, 월목표, 배당률) {
+            $('#초기자본, #월적립, #월목표, #배당률').closest('div').find('#error').css('display', 'none');
             
+            
+            if (isNaN(초기자본) || 초기자본 < 0) {
+                // $('#초기자본').closest('div').find('#error').css('display', 'block');
+                // $('#초기자본').val('').focus();\
+                $('#초기자본').val('0');
+                $('#result').html('');
+                $('#resultTable').html('');
+                return false;
+            }
+
+            if (isNaN(월적립) || 월적립 < 0) {
+                $('#월적립').closest('div').find('#error').css('display', 'block');
+                $('#월적립').val('').focus();
+                $('#result').html('');
+                $('#resultTable').html('');
+                return false;
+            }
+
+            if (isNaN(월목표) || 월목표 < 0) {
+                $('#월목표').closest('div').find('#error').css('display', 'block');
+                $('#월목표').val('').focus();
+                $('#result').html('');
+                $('#resultTable').html('');
+                return false;
+            }
+
+            if (isNaN(배당률) || 배당률 <= 0) {
+                $('#배당률').closest('div').find('#error').css('display', 'block');
+                $('#배당률').val('').focus();
+                $('#result').html('');
+                $('#resultTable').html('');
+                return false;
+            }
+
+            return true;
 
 
         }
-
-        
         function numberWithCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
@@ -73,30 +145,94 @@
         $(document).ready(function () {
             $('#calculateBtn').click(function () {
                 // 사용자로부터 입력받은 값들을 가져옴
-                let 월목표 = parseInt($('#월목표').val());
+                let 초기자본 = parseInt($('#초기자본').val());
                 let 월적립 = parseInt($('#월적립').val());
-                let 이율 = parseFloat($('#이율').val());
+                let 월목표 = parseInt($('#월목표').val());
+                let 배당률 = parseFloat($('#배당률').val());
 
                 // calc 함수 호출하여 결과를 화면에 출력
-                calc(월목표, 월적립, 이율);
+                if (checkValid(초기자본, 월적립, 월목표, 배당률)) calc(초기자본, 월적립, 월목표, 배당률);
             });
         });
     </script>
 </head>
+
 <body>
     <div class="container">
-        <!-- 웹사이트 내용을 여기에 작성 -->
-        <label for="월목표">월 목표 배당금: </label>
-        <input type="number" id="월목표" class="form-control"><br>
-        <label for="월적립">월 적립액: </label>
-        <input type="number" id="월적립" class="form-control"><br>
-        <label for="이율">배당률: </label>
-        <input type="number" id="이율" class="form-control"><br>
-        <button id="calculateBtn" class="btn btn-primary">계산하기</button>
-        <br><br>
-        <div id="result"></div>
-        <br><br>
-        <table id="resultTable"></table>
+        <h1 class="container-fluid mt-5">월 배당 목표 계산기</h1><br><br>
+
+
+        <!-- main section-->
+
+        <!-- 추후 섹션 지정시 설정. -->
+        <!-- <div class="bg-primary-subtle pt-3" id="mainContainer"> -->
+        <div class="pt-3" id="mainContainer">
+
+            <!-- input -->
+            <div class="input-group mb-3 w-50">
+                <label for="초기자본" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                    <span>초기 자본</span>
+                </label>
+                <input type="number" id="초기자본" class="form-control">
+                <div class="input-group mt-1">
+                    <span id="error" class="text-danger" style="display: none;">
+                        초기 자본을 올바르게 입력해주세요.
+                    </span>
+                </div>
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <label for="월적립" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                    <span>월 적립액</span>
+                </label>
+                <input type="number" id="월적립" class="form-control">
+                <div class="input-group mt-1">
+                    <span id="error" class="text-danger" style="display: none;">
+                        월 적립액을 올바르게 입력해주세요.
+                    </span>
+                </div>
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <label for="월목표" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                    <span>월 목표 배당금</span>
+                </label>
+                <input type="number" id="월목표" class="form-control">
+                <div class="input-group mt-1">
+                    <span id="error" class="text-danger" style="display: none;">
+                        월 목표 배당금을 올바르게 입력해주세요.
+                    </span>
+                </div>
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <label for="배당률" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                    <span>배당률</span>
+                </label>
+                <input type="number" id="배당률" class="form-control">
+                <div class="input-group mt-1">
+                    <span id="error" class="text-danger" style="display: none;">
+                        배당률 올바르게 입력해주세요.
+                    </span>
+                </div>
+            </div>
+            <!-- //input -->
+
+            <div class="d-grid gap-2 col-6 w-50">
+                <button id="calculateBtn" class="btn btn-primary btn-lg">계산하기</button>
+            </div>
+            <br><br>
+            <div id="result"></div>
+            <br><br>
+            <table id="resultTable" class="w-50"></table>
+
+        </div>
+
+        <!-- ad section-->
+        <!-- <div class="bg-secondary-subtle w-25" id="adContainer">
+            asdasdas
+        </div> -->
     </div>
 </body>
+
 </html>
