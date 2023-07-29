@@ -41,6 +41,11 @@
                 tableData.push([month, numberWithCommas(value) + '원', numberWithCommas(월배당) + '원']);
             }
 
+            // 결과를 화면에 출력
+            let result = "필요기간 : " + month + "개월, " + "원금 : " + numberWithCommas(value) + "원";
+            console.log(result);
+            $('#result').text(result);
+            
             // TOAST UI Grid 생성
             const grid = new tui.Grid({
                 el: document.getElementById('resultTable'),
@@ -55,11 +60,6 @@
                     visiblePages: 10,
                 }
             });
-            
-            // 결과를 화면에 출력
-            let result = "필요기간 : " + month + "개월, " + "원금 : " + numberWithCommas(value) + "원";
-            console.log(result);
-            $('#result').text(result);
         }
 
         function numberWithCommas(x) {
