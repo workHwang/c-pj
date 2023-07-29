@@ -30,6 +30,9 @@
                 tableContent += `<tr><td>${month}</td><td>${numberWithCommas(value)}원</td><td>${numberWithCommas(월배당)}원</td></tr>`;
                 gridData.push({month: month, value: numberWithCommas(value)+'원', divident: numberWithCommas(월배당)+'원'});
             }
+
+            console.log("gridData:: " + gridData);
+            
             // 결과를 테이블에 출력
             // $('#resultTable').html(tableContent);
             
