@@ -41,6 +41,8 @@
             console.log(result);
             $('#result').text(result);
 
+            // 그리드를 갱신합니다.
+            grid.refresh();
             
             const grid = new tui.Grid({
               el: document.getElementById('resultTable'),
@@ -59,7 +61,7 @@
                 visiblePages: 10
               }
             });
-            grid.setData(gridData);
+            
 
             
         }
