@@ -35,34 +35,34 @@
 
     <script>
         /**
-         * initInvst    : 초기 투자금
-         * monthlyInvst : 월 투자금
-         * dividendGoal : 목표 배당금
-         * dividendRate : 배당률
+         * initialCapital       : 초기 투자금
+         * monthlyInvestment    : 월 투자금
+         * dividendGoal         : 목표 배당금
+         * dividendRate         : 배당률
         */
-        function calc(initInvst, monthlyInvst, dividendGoal, dividendRate) {
-            let months = 0;                 // 개월 수
-            let totalInvst = 0;             // 총 투자금
-            let monthlyDividend = 0;        // 월 배당금
+        function calc(initialCapital, monthlyInvestment, dividendGoal, dividendRate) {
+            let months = 0;             // 개월 수
+            let totalInvestment = 0;    // 총 투자금
+            let monthlyDividend = 0;    // 월 배당금
             const gridData = [];
 
             $('#resultTable').html('');
-            isNaN(monthlyInvst) ? 0 : monthlyInvst;
-            if (initInvst > 0) totalInvst = initInvst;
+            isNaN(monthlyInvestment) ? 0 : monthlyInvestment;
+            if (initialCapital > 0) totalInvestment = initialCapital;
 
-            if (!isNaN(monthlyInvst) && (initInvst > 0 || monthlyInvst > 0)) {
+            if (!isNaN(monthlyInvestment) && (initialCapital > 0 || monthlyInvestment > 0)) {
                 while (monthlyDividend < dividendGoal) {
-                    totalInvst += monthlyInvst;
+                    totalInvestment += monthlyInvestment;
 
-                    if (totalInvst == 0) { 
+                    if (totalInvestment == 0) { 
                         monthlyDividend = 0;
                     } else {
-                        monthlyDividend = Math.floor((totalInvst * (dividendRate / 100) / 12) * 0.846); 
+                        monthlyDividend = Math.floor((totalInvestment * (dividendRate / 100) / 12) * 0.846); 
                     }
-                    totalInvst += monthlyDividend;  
+                    totalInvestment += monthlyDividend;  
                     months++;
 
-                    gridData.push({ months: months, totalInvst: numberWithCommas(totalInvst) + '원',   divident: numberWithCommas(monthlyDividend) + '원', dividentY: numberWithCommas(monthlyDividend*12) + '원' });
+                    gridData.push({ months: months, totalInvestment: numberWithCommas(totalInvestment) + '원',   divident: numberWithCommas(monthlyDividend) + '원', dividentY: numberWithCommas(monthlyDividend*12) + '원' });
 
                     if(months > 1199){ // 100년이상 계산x
                         break;
@@ -73,7 +73,7 @@
             }
 
             let result = '<span>필요 기간 : ' + (months < 1200 ? months + '개월' : months + '개월 이상') +'</span><br>';
-                result +='<span>총 투자금 : ' + numberWithCommas(totalInvst) + '원</span>';
+                result +='<span>총 투자금 : ' + numberWithCommas(totalInvestment) + '원</span>';
             $('#result').html(result);
             
             tui.Grid.applyTheme('clean');
@@ -82,10 +82,10 @@
                 el: document.getElementById('resultTable'),
                 contextMenu: null,
                 columns: [
-                    { header: '개월',           name: 'months',     align: 'center',  width: '60'}, 
-                    { header: '총 투자금',      name: 'totalInvst', align: 'center' }, 
-                    { header: '월 평균 배당금', name: 'divident',   align: 'center' }, 
-                    { header: '연간 배당금',    name: 'dividentY',  align: 'center' }
+                    { header: '개월',           name: 'months',             align: 'center',  width: '60'}, 
+                    { header: '총 투자금',      name: 'totalInvestment',    align: 'center' }, 
+                    { header: '월 평균 배당금', name: 'divident',           align: 'center' }, 
+                    { header: '연간 배당금',    name: 'dividentY',          align: 'center' }
                 ],
                 data: gridData,
                 rowHeight: 40,
@@ -105,27 +105,27 @@
             $('#resultArea').show();
         }
 
-        function checkValid(initInvst, monthlyInvst, dividendGoal, dividendRate) {
-            $('#initInvst, #monthlyInvst, #dividendGoal, #dividendRate, #calculateBtn').closest('div').find('#error').hide();
+        function checkValid(initialCapital, monthlyInvestment, dividendGoal, dividendRate) {
+            $('#initialCapital, #monthlyInvestment, #dividendGoal, #dividendRate, #calculateBtn').closest('div').find('.error-msg').hide();
             $('#resultArea').hide();
 
-            if (isNaN(initInvst) || initInvst < 0) {
-                $('#initInvst').val('0');
+            if (isNaN(initialCapital) || initialCapital < 0) {
+                $('#initialCapital').val('0');
                 $('#result').html('');
                 $('#resultTable').html('');
                 return false;
             }
             
-            if (isNaN(monthlyInvst) || monthlyInvst < 0) {
-                $('#monthlyInvst').closest('div').find('#error').show();
-                $('#monthlyInvst').val('').focus();
+            if (isNaN(monthlyInvestment) || monthlyInvestment < 0) {
+                $('#monthlyInvestment').closest('div').find('.error-msg').show();
+                $('#monthlyInvestment').val('').focus();
                 $('#result').html('');
                 $('#resultTable').html('');
                 return false;
             }
 
-            if (initInvst == 0 && monthlyInvst == 0) {
-                $('#calculateBtn').closest('div').find('#error').show();
+            if (initialCapital == 0 && monthlyInvestment == 0) {
+                $('#calculateBtn').closest('div').find('.error-msg').show();
                 $('#calculateBtn').val('').focus();
                 $('#result').html('');
                 $('#resultTable').html('');
@@ -133,7 +133,7 @@
             }
 
             if (isNaN(dividendGoal) || dividendGoal < 0) {
-                $('#dividendGoal').closest('div').find('#error').show();
+                $('#dividendGoal').closest('div').find('.error-msg').show();
                 $('#dividendGoal').val('').focus();
                 $('#result').html('');
                 $('#resultTable').html('');
@@ -141,7 +141,7 @@
             }
 
             if (isNaN(dividendRate) || dividendRate <= 0) {
-                $('#dividendRate').closest('div').find('#error').show();
+                $('#dividendRate').closest('div').find('.error-msg').show();
                 $('#dividendRate').val('').focus();
                 $('#result').html('');
                 $('#resultTable').html('');
@@ -158,12 +158,12 @@
 
         $(document).ready(function () {
             $('#calculateBtn').click(function () {
-                let initInvst = parseInt($('#initInvst').val());
-                let monthlyInvst = parseInt($('#monthlyInvst').val());
+                let initialCapital = parseInt($('#initialCapital').val());
+                let monthlyInvestment = parseInt($('#monthlyInvestment').val());
                 let dividendGoal = parseInt($('#dividendGoal').val());
                 let dividendRate = parseFloat($('#dividendRate').val());
 
-                if (checkValid(initInvst, monthlyInvst, dividendGoal, dividendRate)) calc(initInvst, monthlyInvst, dividendGoal, dividendRate);
+                if (checkValid(initialCapital, monthlyInvestment, dividendGoal, dividendRate)) calc(initialCapital, monthlyInvestment, dividendGoal, dividendRate);
             });
         });
     </script>
@@ -180,23 +180,23 @@
 
             <!-- input -->
             <div class="input-group mb-3 ">
-                <label for="initInvst" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                <label for="initialCapital" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
                     <span>초기 자본</span>
                 </label>
-                <input type="number" id="initInvst" class="form-control">
+                <input type="number" id="initialCapital" class="form-control">
                 <div class="input-group mt-1">
-                    <span id="error" class="text-danger" style="display: none;">
+                    <span class="error-msg text-danger" style="display: none;">
                         초기 자본을 올바르게 입력해주세요.
                     </span>
                 </div>
             </div>
             <div class="input-group mb-3 w-100">
-                <label for="monthlyInvst" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                <label for="monthlyInvestment" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
                     <span>월 투자액</span>
                 </label>
-                <input type="number" id="monthlyInvst" class="form-control">
+                <input type="number" id="monthlyInvestment" class="form-control">
                 <div class="input-group mt-1">
-                    <span id="error" class="text-danger" style="display: none;">
+                    <span class="error-msg text-danger" style="display: none;">
                         월 투자액을 올바르게 입력해주세요.
                     </span>
                 </div>
@@ -207,7 +207,7 @@
                 </label>
                 <input type="number" id="dividendGoal" class="form-control ">
                 <div class="input-group mt-1">
-                    <span id="error" class="text-danger" style="display: none;">
+                    <span class="error-msg text-danger" style="display: none;">
                         월 목표 배당금을 올바르게 입력해주세요.
                     </span>
                 </div>
@@ -218,7 +218,7 @@
                 </label>
                 <input type="number" id="dividendRate" class="form-control">
                 <div class="input-group mt-1">
-                    <span id="error" class="text-danger" style="display: none;">
+                    <span class="error-msg text-danger" style="display: none;">
                         배당률을 올바르게 입력해주세요.
                     </span>
                 </div>
@@ -226,7 +226,7 @@
             <!-- //input -->
             <div class="d-grid gap-2 col-6 w-100">
                 <button id="calculateBtn" class="btn btn-primary btn-lg">계산하기</button>
-                <span id="error" class="text-danger" style="display: none;">
+                <span class="error-msg text-danger" style="display: none;">
                     초기 자본 또는 월 투자액을 입력해주세요.
                 </span>
             </div>
