@@ -12,18 +12,6 @@
     <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 
     <script>
-        $(document).ready(function () {
-            $('#calculateBtn').click(function () {
-                // 사용자로부터 입력받은 값들을 가져옴
-                let 월목표 = parseInt($('#월목표').val());
-                let 월적립 = parseInt($('#월적립').val());
-                let 이율 = parseFloat($('#이율').val());
-
-                // calc 함수 호출하여 결과를 화면에 출력
-                calc(월목표, 월적립, 이율);
-            });
-        });
-        
         function calc(월목표, 월적립, 이율) {
             let month = 0;
             let value = 0;
@@ -65,7 +53,18 @@
         function numberWithCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
+        
+        $(document).ready(function () {
+            $('#calculateBtn').click(function () {
+                // 사용자로부터 입력받은 값들을 가져옴
+                let 월목표 = parseInt($('#월목표').val());
+                let 월적립 = parseInt($('#월적립').val());
+                let 이율 = parseFloat($('#이율').val());
 
+                // calc 함수 호출하여 결과를 화면에 출력
+                calc(월목표, 월적립, 이율);
+            });
+        });
     </script>
 </head>
 <body>
