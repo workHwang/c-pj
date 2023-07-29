@@ -19,6 +19,8 @@
 
             let tableContent = "<tr><th>월</th><th>주식 보유액</th><th>월 배당금</th></tr>";
 
+            const gridData = [];
+            
             while (월배당 < 월목표) {
                 value += 월적립;
                 월배당 = Math.floor((value * (이율 / 100) / 12) * 0.846);
@@ -26,6 +28,7 @@
                 month++;
 
                 tableContent += `<tr><td>${month}</td><td>${numberWithCommas(value)}원</td><td>${numberWithCommas(월배당)}원</td></tr>`;
+                gridData.push({month: month, value: numberWithCommas(value)+'원', divident: numberWithCommas(월배당)+'원'});
             }
             // 결과를 테이블에 출력
             // $('#resultTable').html(tableContent);
@@ -35,37 +38,8 @@
             console.log(result);
             $('#result').text(result);
 
-            const dataSource = {
-              api: {
-                readData: {
-                  url: '/api/v1/stocks',
-                  method: 'calc',
-                  params: {
-                    page: 1,
-                    size: 10
-                  }
-                }
-              },
-              data: {
-                rows: [
-                  {
-                    month: month,
-                    value: numberWithCommas(value),
-                    월배당: numberWithCommas(월배당)
-                  },
-                  {
-                    month: month,
-                    value: numberWithCommas(value),
-                    월배당: numberWithCommas(월배당)
-                  },
-                  {
-                    month: month,
-                    value: numberWithCommas(value),
-                    월배당: numberWithCommas(월배당)
-                  }
-                ]
-              }
-            };
+
+            
             const grid = new tui.Grid({
               el: document.getElementById('resultTable'),
               columns: [
@@ -73,9 +47,7 @@
                 { header: '주식 보유액', name: '주식 보유액' },
                 { header: '월 배당금', name: '월 배당금' }
               ],
-              data: {
-                rows: dataSource.data.rows
-              },
+              data: gridData,
               scrollX: false,
               pageOptions: {
                 useClient: true,
