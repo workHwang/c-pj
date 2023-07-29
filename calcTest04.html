@@ -36,22 +36,55 @@
             $('#result').text(result);
 
             // TOAST UI Grid 생성
-            const grid = new tui.Grid({
-                el: document.getElementById('resultTable'),
-                columns: [
-                    { header: '월', name: '월' },
-                    { header: '주식 보유액', name: '주식 보유액' },
-                    { header: '월 배당금', name: '월 배당금' }
-                ],
-                data: {
-                    rows: tableData
-                },
-                scrollX: false,
-                pageOptions: {
-                    useClient: true,
-                    perPage: pageSize,
-                    visiblePages: 10,
+            // const grid = new tui.Grid({
+            //     el: document.getElementById('resultTable'),
+            //     columns: [
+            //         { header: '월', name: '월' },
+            //         { header: '주식 보유액', name: '주식 보유액' },
+            //         { header: '월 배당금', name: '월 배당금' }
+            //     ],
+            //     data: {
+            //         rows: tableData
+            //     },
+            //     scrollX: false,
+            //     pageOptions: {
+            //         useClient: true,
+            //         perPage: pageSize,
+            //         visiblePages: 10,
+            //     }
+            // });
+            const dataSource = {
+              api: {
+                readData: {
+                  url: '/api/v1/stocks',
+                  method: 'GET',
+                  params: {
+                    page: 1,
+                    size: 10
+                  }
                 }
+              },
+              data: {
+                rows: []
+              }
+            };
+            
+            const grid = new tui.Grid({
+              el: document.getElementById('resultTable'),
+              columns: [
+                { header: '월', name: '월' },
+                { header: '주식 보유액', name: '주식 보유액' },
+                { header: '월 배당금', name: '월 배당금' }
+              ],
+              data: {
+                rows: dataSource.data.rows
+              },
+              scrollX: false,
+              pageOptions: {
+                useClient: true,
+                perPage: 10,
+                visiblePages: 10,
+              }
             });
         }
 
