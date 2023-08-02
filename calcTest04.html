@@ -36,7 +36,7 @@
     <script>
         /**
          * initialCapital       : 초기 투자금
-         * monthlyInvestment    : 월 투자금
+         * monthlyInvestment    : 월 적립금
          * dividendGoal         : 목표 배당금
          * dividendRate         : 배당률
         */
@@ -148,8 +148,6 @@
                 return false;
             }
 
-
-
             return true;
         }
         function numberWithCommas(x) {
@@ -164,6 +162,12 @@
                 let dividendRate = parseFloat($('#dividendRate').val());
 
                 if (checkValid(initialCapital, monthlyInvestment, dividendGoal, dividendRate)) calc(initialCapital, monthlyInvestment, dividendGoal, dividendRate);
+            });
+            $('#btnCancel').on('click', function () {
+                console.log('asdas');
+                $('#initialCapital, #monthlyInvestment, #dividendGoal, #dividendRate').val('');
+                $('#initialCapital, #monthlyInvestment, #dividendGoal, #dividendRate, #calculateBtn').closest('div').find('.error-msg').hide();
+                $('#resultArea').hide();
             });
         });
     </script>
@@ -192,12 +196,12 @@
             </div>
             <div class="input-group mb-3 w-100">
                 <label for="monthlyInvestment" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
-                    <span>월 투자액</span>
+                    <span>월 적립액</span>
                 </label>
                 <input type="number" id="monthlyInvestment" class="form-control">
                 <div class="input-group mt-1">
                     <span class="error-msg text-danger" style="display: none;">
-                        월 투자액을 올바르게 입력해주세요.
+                        월 적립액을 올바르게 입력해주세요.
                     </span>
                 </div>
             </div>
@@ -224,10 +228,11 @@
                 </div>
             </div>
             <!-- //input -->
-            <div class="d-grid gap-2 col-6 w-100">
-                <button id="calculateBtn" class="btn btn-primary btn-lg">계산하기</button>
+            <div class="d-flex gap-4 w-100 ">
+                <button id="calculateBtn" class="btn btn-primary btn-lg w-50">계산하기</button>
+                <button id="btnCancel" class="btn btn-secondary  btn-lg w-50">초기화</button>
                 <span class="error-msg text-danger" style="display: none;">
-                    초기 자본 또는 월 투자액을 입력해주세요.
+                    초기 자본 또는 월 적립액을 입력해주세요.s
                 </span>
             </div>
             
