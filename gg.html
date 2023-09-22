@@ -1,1 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>턴제 전투 게임</title>
+    <style>
+        #player {
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+            position: absolute;
+        }
+        #enemy {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <h1>턴제 전투 게임</h1>
+    <div id="player"></div>
+    <div id="enemy"></div>
+    <p id="result"></p>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var playerHealth = 100;
+        var enemyHealth = 100;
+        var playerTurn = true;
+
+        $("#attackButton").click(function() {
+            playerAttack();
+        });
+
+        // 키보드 입력 처리
+        $(document).keydown(function(e) {
+            if (e.key === 'A' || e.key === 'a') {
+                playerAttack();
+            }
+        });
+
+        function playerAttack() {
+            if (playerTurn) {
+                // 플레이어의 공격
+                var damage = Math.floor(Math.random() * 10) + 1;
+                enemyHealth -= damage;
+                $("#result").text("플레이어가 적을 공격했습니다. " + damage + "의 데미지를 입혔습니다.");
+
+                if (enemyHealth <= 0) {
+                    $("#result").text("적을 물리쳤습니다! 게임 종료.");
+                    $("#enemy").hide();
+                    $("#attackButton").prop("disabled", true);
+                    $(document).off("keydown"); // 더 이상 키 입력 받지 않음
+                }
+
+                playerTurn = false;
+            } else {
+                // 적의 공격
+                var damage = Math.floor(Math.random() * 10) + 1;
+                playerHealth -= damage;
+                $("#result").text("적이 플레이어를 공격했습니다. " + damage + "의 데미지를 입혔습니다.");
+
+                if (playerHealth <= 0) {
+                    $("#result").text("플레이어가 패배했습니다. 게임 종료.");
+                    $("#player").hide();
+                    $("#attackButton").prop("disabled", true);
+                    $(document).off("keydown"); // 더 이상 키 입력 받지 않음
+                }
+
+                playerTurn = true;
+            }
+        }
+    </script>
+</body>
+</html>
