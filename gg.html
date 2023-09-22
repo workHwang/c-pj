@@ -3,9 +3,14 @@
 <head>
     <title>턴제 전투 게임</title>
     <style>
-        .character {
+        .character-container {
+            position: relative;
             width: 100px;
             height: 100px;
+        }
+        .character {
+            width: 100%;
+            height: 100%;
             position: absolute;
         }
         #player {
@@ -13,8 +18,6 @@
         }
         #enemy {
             background-color: red;
-            top: 0; /* 적의 위치를 상단에 지정 */
-            left: 0; /* 적의 위치를 왼쪽에 지정 */
             z-index: 1; /* 적의 층위를 높여 겹치지 않게 함 */
         }
         #result {
@@ -24,8 +27,10 @@
 </head>
 <body>
     <h1>턴제 전투 게임</h1>
-    <div id="player" class="character"></div>
-    <div id="enemy" class="character"></div>
+    <div class="character-container">
+        <div id="player" class="character"></div>
+        <div id="enemy" class="character"></div>
+    </div>
     <p id="result"></p>
     <button id="attackButton">공격 (버튼)</button>
 
