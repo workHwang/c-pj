@@ -4,21 +4,19 @@
     <title>턴제 전투 게임</title>
     <style>
         .character-container {
-            position: relative;
-            width: 100px;
-            height: 100px;
+            display: flex;
+            justify-content: space-between;
+            width: 300px; /* 이미지 영역 너비 조절 */
         }
         .character {
-            width: 100%;
-            height: 100%;
-            position: absolute;
+            width: 100px;
+            height: 100px;
         }
         #player {
             background-color: blue;
         }
         #enemy {
             background-color: red;
-            z-index: 1; /* 적의 층위를 높여 겹치지 않게 함 */
         }
         #result {
             margin-top: 150px;
