@@ -14,12 +14,12 @@
             height: 100px;
             background-color: red;
             position: absolute;
-            top: 0; /* 상단에 위치하도록 수정 */
-            left: 0; /* 왼쪽에 위치하도록 수정 */
-            z-index: 1; /* 적의 층위를 높여 겹치지 않게 조정 */
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
         #result {
-            margin-top: 150px; /* 결과 메시지를 아래로 내림 */
+            margin-top: 150px;
         }
     </style>
 </head>
@@ -28,6 +28,7 @@
     <div id="player"></div>
     <div id="enemy"></div>
     <p id="result"></p>
+    <button id="attackButton">공격 (버튼)</button>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -41,7 +42,7 @@
 
         // 키보드 입력 처리
         $(document).keydown(function(e) {
-            if (e.key === 'A' || e.key === 'a') {
+            if ((e.key === 'A' || e.key === 'a') && playerTurn) {
                 playerAttack();
             }
         });
@@ -57,7 +58,7 @@
                     $("#result").text("적을 물리쳤습니다! 게임 종료.");
                     $("#enemy").hide();
                     $("#attackButton").prop("disabled", true);
-                    $(document).off("keydown"); // 더 이상 키 입력 받지 않음
+                    $(document).off("keydown");
                 }
 
                 playerTurn = false;
@@ -71,7 +72,7 @@
                     $("#result").text("플레이어가 패배했습니다. 게임 종료.");
                     $("#player").hide();
                     $("#attackButton").prop("disabled", true);
-                    $(document).off("keydown"); // 더 이상 키 입력 받지 않음
+                    $(document).off("keydown");
                 }
 
                 playerTurn = true;
