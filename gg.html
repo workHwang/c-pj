@@ -19,7 +19,12 @@
             background-color: red;
         }
         #result {
-            margin-top: 150px;
+            margin-top: 20px;
+        }
+        #stats {
+            width: 150px; /* 스탯 영역 너비 조절 */
+            background-color: #f0f0f0;
+            padding: 10px;
         }
     </style>
 </head>
@@ -32,30 +37,39 @@
     <p id="result"></p>
     <button id="attackButton">공격 (버튼)</button>
 
-    <p>플레이어 체력: <span id="playerHealth">100</span></p>
-    <p>적 체력: <span id="enemyHealth">100</span></p>
+    <div id="stats">
+        <h2>유저 스텟</h2>
+        <p>HP: <span id="playerHealth">100</span></p>
+        <p>공격력: <span id="playerAttack">10</span></p>
+        <p>방어력: <span id="playerDefense">10</span></p>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var playerHealth = 100;
+        var playerAttack = 10;
+        var playerDefense = 10;
         var enemyHealth = 100;
         var playerTurn = true;
 
+        // 초기 스탯 표시
+        updateStats();
+
         $("#attackButton").click(function() {
-            playerAttack();
+            playerAttackEnemy();
         });
 
         // 키보드 입력 처리
         $(document).keydown(function(e) {
             if ((e.key === 'A' || e.key === 'a') && playerTurn) {
-                playerAttack();
+                playerAttackEnemy();
             }
         });
 
-        function playerAttack() {
+        function playerAttackEnemy() {
             if (playerTurn) {
                 // 플레이어의 공격
-                var damage = Math.floor(Math.random() * 10) + 1;
+                var damage = calculateDamage(playerAttack);
                 enemyHealth -= damage;
                 $("#enemyHealth").text(enemyHealth); // 적 체력 표시 업데이트
                 $("#result").text("플레이어가 적을 공격했습니다. " + damage + "의 데미지를 입혔습니다.");
@@ -69,7 +83,7 @@
 
                 playerTurn = false;
             } else {
-                // 적의 공격
+                // 적의 공격 (단순 데미지 적용)
                 var damage = Math.floor(Math.random() * 10) + 1;
                 playerHealth -= damage;
                 $("#playerHealth").text(playerHealth); // 플레이어 체력 표시 업데이트
@@ -84,6 +98,23 @@
 
                 playerTurn = true;
             }
+        }
+
+        function calculateDamage(attack) {
+            // 공격력과 상대방의 방어력을 고려한 데미지 계산
+            var baseDamage = Math.floor(Math.random() * 10) + 1;
+            var totalDamage = baseDamage + attack - playerDefense;
+            if (totalDamage < 0) {
+                totalDamage = 0; // 음수 데미지를 방지
+            }
+            return totalDamage;
+        }
+
+        // 스탯 업데이트
+        function updateStats() {
+            $("#playerHealth").text(playerHealth);
+            $("#playerAttack").text(playerAttack);
+            $("#playerDefense").text(playerDefense);
         }
     </script>
 </body>
