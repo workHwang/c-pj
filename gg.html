@@ -14,6 +14,12 @@
             height: 100px;
             background-color: red;
             position: absolute;
+            top: 0; /* 상단에 위치하도록 수정 */
+            left: 0; /* 왼쪽에 위치하도록 수정 */
+            z-index: 1; /* 적의 층위를 높여 겹치지 않게 조정 */
+        }
+        #result {
+            margin-top: 150px; /* 결과 메시지를 아래로 내림 */
         }
     </style>
 </head>
