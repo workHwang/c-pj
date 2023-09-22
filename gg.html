@@ -3,20 +3,16 @@
 <head>
     <title>턴제 전투 게임</title>
     <style>
-        #player {
+        .character {
             width: 100px;
             height: 100px;
-            background-color: blue;
             position: absolute;
         }
+        #player {
+            background-color: blue;
+        }
         #enemy {
-            width: 100px;
-            height: 100px;
             background-color: red;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
         }
         #result {
             margin-top: 150px;
@@ -25,10 +21,13 @@
 </head>
 <body>
     <h1>턴제 전투 게임</h1>
-    <div id="player"></div>
-    <div id="enemy"></div>
+    <div id="player" class="character"></div>
+    <div id="enemy" class="character"></div>
     <p id="result"></p>
     <button id="attackButton">공격 (버튼)</button>
+
+    <p>플레이어 체력: <span id="playerHealth">100</span></p>
+    <p>적 체력: <span id="enemyHealth">100</span></p>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -52,6 +51,7 @@
                 // 플레이어의 공격
                 var damage = Math.floor(Math.random() * 10) + 1;
                 enemyHealth -= damage;
+                $("#enemyHealth").text(enemyHealth); // 적 체력 표시 업데이트
                 $("#result").text("플레이어가 적을 공격했습니다. " + damage + "의 데미지를 입혔습니다.");
 
                 if (enemyHealth <= 0) {
@@ -66,6 +66,7 @@
                 // 적의 공격
                 var damage = Math.floor(Math.random() * 10) + 1;
                 playerHealth -= damage;
+                $("#playerHealth").text(playerHealth); // 플레이어 체력 표시 업데이트
                 $("#result").text("적이 플레이어를 공격했습니다. " + damage + "의 데미지를 입혔습니다.");
 
                 if (playerHealth <= 0) {
