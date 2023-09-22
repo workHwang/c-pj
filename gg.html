@@ -13,6 +13,9 @@
         }
         #enemy {
             background-color: red;
+            top: 0; /* 적의 위치를 상단에 지정 */
+            left: 0; /* 적의 위치를 왼쪽에 지정 */
+            z-index: 1; /* 적의 층위를 높여 겹치지 않게 함 */
         }
         #result {
             margin-top: 150px;
@@ -28,7 +31,7 @@
 
     <p>플레이어 체력: <span id="playerHealth">100</span></p>
     <p>적 체력: <span id="enemyHealth">100</span></p>
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var playerHealth = 100;
