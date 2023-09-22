@@ -92,5 +92,31 @@
         }
         return value;
     }
+
+    /**
+     * Null Check 
+     */
+    function isNull(value) {
+        return value === null || typeof value === 'undefined';
+    }
+
+    /**
+     * Array || Object Empty Check 
+     */
+    function isEmpty(obj) {
+        // 배열 또는 객체가 주어지지 않았으면 비어있는 것으로 처리
+        if (obj === null || obj === undefined) {
+            return true;
+        }
+        
+        // 배열이나 객체의 길이 또는 속성의 개수를 확인하여 비어있는지 여부를 반환
+        if (Array.isArray(obj)) {
+            return obj.length === 0;
+        } else if (typeof obj === 'object') {
+            return Object.keys(obj).length === 0;
+        }
+        
+        return false; // 배열 또는 객체가 아닌 경우 비어있지 않음
+    }
     
 }
