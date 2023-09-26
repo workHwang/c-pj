@@ -118,5 +118,20 @@
         
         return false; // 배열 또는 객체가 아닌 경우 비어있지 않음
     }
-    
+
+    /**
+     * 특정 값이 어느 구간에 해당하는지 return
+     * @param {number} value       : 구간을 계산할 값.
+     * @param {number} sectionSize : 구간 설정값.
+     * @param {number} defaultValue: 구간을 계산할 기준값.
+     * 
+     * @example getSectionNumber(18, 15, 15); // 1;
+     */
+    function getSectionNumber(value, sectionSize, defaultValue) {
+    if (value < defaultValue) {
+        return 0;
+    } else {
+        return Math.floor(value / sectionSize);
+    }
+}
 }
