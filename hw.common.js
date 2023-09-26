@@ -120,18 +120,22 @@
     }
 
     /**
-     * 특정 값이 어느 구간에 해당하는지 return
-     * @param {number} value       : 구간을 계산할 값.
-     * @param {number} sectionSize : 구간 설정값.
-     * @param {number} defaultValue: 구간을 계산할 기준값.
-     * 
-     * @example getSectionNumber(18, 15, 15); // 1;
+     * 입력값을 구간으로 나누어 구간 번호를 계산한다.
+     *
+     * @param {number} value - 구간을 계산하려는 값.
+     * @param {number} sectionSize - 구간의 크기.
+     * @param {number} startValue - 구간 계산을 시작할 기준값.
+     * @param {number} maxValue - 최대 구간 값을 나타내는 값.
+     * @returns {number} 입력값이 속한 구간 번호.
      */
-    function getSectionNumber(value, sectionSize, defaultValue) {
-    if (value < defaultValue) {
-        return 0;
-    } else {
-        return Math.floor(value / sectionSize);
+    function calcSection(value, sectionSize, startValue, maxValue) {
+        // 입력값을 기준값을 기준으로 구간화하고 구간 번호를 계산
+        const baseSection = Math.floor((value - startValue) / sectionSize) + 1;
+    
+        // 계산된 구간 번호를 0 이상에서 최대 구간 값까지 제한
+        return Math.max(0, Math.min(baseSection, Math.floor((maxValue - startValue) / sectionSize) + 1));
     }
-}
+
+
+    
 }
