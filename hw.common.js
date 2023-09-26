@@ -125,10 +125,17 @@
      * @param {number} value - 구간을 계산하려는 값.
      * @param {number} sectionSize - 구간의 크기.
      * @param {number} startValue - 구간 계산을 시작할 기준값.
-     * @param {number} maxValue - 최대 구간 값을 나타내는 값.
+     * @param {number} maxValue - 최대 구간 값을 나타내는 값. (optional)
      * @returns {number} 입력값이 속한 구간 번호.
+     * @example 15미만 정상, 15이상부터 15간격으로 구간을 설정하고 60이상인 경우 4구간으로 표기할 경우.
+     *          calcSection(22, 15, 15, 60) // 1 구간.
      */
     function calcSection(value, sectionSize, startValue, maxValue) {
+        // maxValue가 정의되지 않거나 0인 경우, 구간 제한을 두지 않음
+        if (typeof maxValue === 'undefined' || maxValue === 0) {
+            return Math.floor((value - startValue) / sectionSize) + 1;
+        }
+        
         // 입력값을 기준값을 기준으로 구간화하고 구간 번호를 계산
         const baseSection = Math.floor((value - startValue) / sectionSize) + 1;
     
