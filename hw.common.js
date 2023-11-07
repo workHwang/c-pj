@@ -143,6 +143,28 @@
         return Math.max(0, Math.min(baseSection, Math.floor((maxValue - startValue) / sectionSize) + 1));
     }
 
+    // optional parameter 수정버전.
+    /**
+     * 입력값을 구간으로 나누어 구간 번호를 계산한다.
+     *
+     * @param {number} value - 구간을 계산하려는 값.
+     * @param {number} sectionSize - 구간의 크기.
+     * @param {number} startValue - 구간 계산을 시작할 기준값.
+     * @param {number} maxValue - 최대 구간 값을 나타내는 값. (optional, 기본값 0)
+     * @returns {number} 입력값이 속한 구간 번호.
+     * @example 15미만 정상, 15이상부터 15간격으로 구간을 설정하고 60이상인 경우 4구간으로 표기할 경우.
+     *          calcSection(22, 15, 15, 60) // 1 구간.
+     */
+    function calcSection(value, sectionSize, startValue, maxValue = 0) {
+        // 입력값을 기준값을 기준으로 구간화하고 구간 번호를 계산
+        const currentSection = Math.floor((value - startValue) / sectionSize) + 1;
 
-    
+        // maxValue가 정의되지 않거나 0인 경우, 구간 제한을 두지 않음
+        if (maxValue === 0) {
+            return currentSection;
+        }
+
+        // 계산된 구간 번호를 0 이상에서 최대 구간 값까지 제한
+        return Math.max(0, Math.min(currentSection, Math.floor((maxValue - startValue) / sectionSize) + 1));
+}
 }
