@@ -166,5 +166,5 @@
 
         // 계산된 구간 번호를 0 이상에서 최대 구간 값까지 제한
         return Math.max(0, Math.min(currentSection, Math.floor((maxValue - startValue) / sectionSize) + 1));
-}
+    }
 }
