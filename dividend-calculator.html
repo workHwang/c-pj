@@ -1,21 +1,266 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no, address=no, email=no">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculate your dividends easily with our Dividend Calculator. Simple and efficient!">
-    <title>Dividend Calculator</title>
+    <title>월 배당금 목표 계산기 - 투자 시뮬레이터</title>
+    <meta name="description" content="월별 배당금 목표와 투자금 계산을 쉽고 빠르게 할 수 있는 무료 계산기입니다.">
+    <meta name="keywords" content="배당금, 투자, 계산기, 월 배당금, 투자 시뮬레이션">
+    <meta name="robots" content="index,follow">
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- TUI -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui-grid/latest/tui-grid.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/v3.3.0/tui-pagination.css">
+
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.19.0/minified.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+    <!-- TUI -->
+    <script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/v1.5.0/tui-code-snippet.js"></script>
+    <script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/v3.3.0/tui-pagination.js"></script>
+    <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
+
     <style>
-        body {
-            margin-top: 50px; /* Increased top margin */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* 상단 여백을 늘림 */
+        .container {
+            margin-top: 60px !important;
         }
     </style>
+
+    <script>
+        /**
+         * initialCapital       : 초기 투자금
+         * monthlyInvestment    : 월 적립금
+         * dividendGoal         : 목표 배당금
+         * dividendRate         : 배당률
+        */
+        function calc(initialCapital, monthlyInvestment, dividendGoal, dividendRate) {
+            let months = 0;             // 개월 수
+            let totalInvestment = 0;    // 총 투자금
+            let monthlyDividend = 0;    // 월 배당금
+            const gridData = [];
+
+            $('#resultTable').html('');
+            isNaN(monthlyInvestment) ? 0 : monthlyInvestment;
+            if (initialCapital > 0) totalInvestment = initialCapital;
+
+            if (!isNaN(monthlyInvestment) && (initialCapital > 0 || monthlyInvestment > 0)) {
+                while (monthlyDividend < dividendGoal) {
+                    totalInvestment += monthlyInvestment;
+
+                    if (totalInvestment == 0) { 
+                        monthlyDividend = 0;
+                    } else {
+                        monthlyDividend = Math.floor((totalInvestment * (dividendRate / 100) / 12) * 0.846); 
+                    }
+                    totalInvestment += monthlyDividend;  
+                    months++;
+
+                    gridData.push({ months: months, totalInvestment: numberWithCommas(totalInvestment) + '원',   divident: numberWithCommas(monthlyDividend) + '원', dividentY: numberWithCommas(monthlyDividend * 12) + '원' });
+
+                    if(months > 1199){ // 100년이상 계산x
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+
+            let result = '<span>필요 기간 : ' + (months < 1200 ? months + '개월' : months + '개월 이상') +'</span><br>';
+                result +='<span>총 투자금 : ' + numberWithCommas(totalInvestment) + '원</span>';
+            $('#result').html(result);
+            
+            tui.Grid.applyTheme('clean');
+
+            const grid = new tui.Grid({
+                el: document.getElementById('resultTable'),
+                contextMenu: null,
+                columns: [
+                    { header: '개월',           name: 'months',             align: 'center',  width: '60'}, 
+                    { header: '총 투자금',      name: 'totalInvestment',    align: 'center' }, 
+                    { header: '월 평균 배당금', name: 'divident',           align: 'center' }, 
+                    { header: '연간 배당금',    name: 'dividentY',          align: 'center' }
+                ],
+                data: gridData,
+                rowHeight: 40,
+                bodyHeight: 400,
+                header: {
+                    height: 40
+                },
+                scrollX: false,
+                scrollY: false,
+                pageOptions: {
+                    useClient: true,
+                    perPage: 10,
+                    visiblePages: 10,
+                }
+            });
+
+            $('#resultArea').show();
+        }
+
+        function checkValid(initialCapital, monthlyInvestment, dividendGoal, dividendRate) {
+            $('#initialCapital, #monthlyInvestment, #dividendGoal, #dividendRate, #btnCalculation').closest('div').find('.error-msg').hide();
+            $('#resultArea').hide();
+
+            if (isNaN(initialCapital) || initialCapital < 0) {
+                $('#initialCapital').val('0');
+                $('#result').html('');
+                $('#resultTable').html('');
+                return false;
+            }
+            
+            if (isNaN(monthlyInvestment) || monthlyInvestment < 0) {
+                $('#monthlyInvestment').closest('div').find('.error-msg').show();
+                $('#monthlyInvestment').val('').focus();
+                $('#result').html('');
+                $('#resultTable').html('');
+                return false;
+            }
+
+            if (initialCapital == 0 && monthlyInvestment == 0) {
+                $('#btnCalculation').closest('div').find('.error-msg').show();
+                $('#btnCalculation').val('').focus();
+                $('#result').html('');
+                $('#resultTable').html('');
+                return false;
+            }
+
+            if (isNaN(dividendGoal) || dividendGoal < 0) {
+                $('#dividendGoal').closest('div').find('.error-msg').show();
+                $('#dividendGoal').val('').focus();
+                $('#result').html('');
+                $('#resultTable').html('');
+                return false;
+            }
+
+            if (isNaN(dividendRate) || dividendRate <= 0) {
+                $('#dividendRate').closest('div').find('.error-msg').show();
+                $('#dividendRate').val('').focus();
+                $('#result').html('');
+                $('#resultTable').html('');
+                return false;
+            }
+
+            return true;
+        }
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        $(document).ready(function () {
+            $('#btnCalculation').click(function () {
+                let initialCapital = parseInt($('#initialCapital').val());
+                let monthlyInvestment = parseInt($('#monthlyInvestment').val());
+                let dividendGoal = parseInt($('#dividendGoal').val());
+                let dividendRate = parseFloat($('#dividendRate').val());
+
+                if (checkValid(initialCapital, monthlyInvestment, dividendGoal, dividendRate)) calc(initialCapital, monthlyInvestment, dividendGoal, dividendRate);
+            });
+            $('#btnCancel').on('click', function () {
+                $('#initialCapital, #monthlyInvestment, #dividendGoal, #dividendRate').val('');
+                $('#initialCapital, #monthlyInvestment, #dividendGoal, #dividendRate, #btnCalculation').closest('div').find('.error-msg').hide();
+                $('#resultArea').hide();
+            });
+        });
+    </script>
 </head>
+
 <body>
-    <h1>Dividend Calculator</h1>
-    <p>Welcome to the Dividend Calculator. Use this tool to calculate your dividends easily.</p>
-    
-    <!-- Visitor Counter -->
-    <img src="https://freecounterstat.com/counter.php?id=your_unique_id_here" alt="Visitor Counter">
+    <div class="container" style="width: 700px;">
+        <h1 class="container-fluid mt-5">월 배당 목표 계산기</h1>
+        <hr class="border border-primary border-3 opacity-75">
+        <!-- main section-->
+
+        <!-- <div class="bg-primary-subtle pt-3" id="mainContainer"> -->
+        <div class="pt-3" id="mainContainer">
+
+            <!-- input -->
+            <div class="input-group mb-3 ">
+                <label for="initialCapital" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                    <span>초기 자본</span>
+                </label>
+                <input type="number" id="initialCapital" class="form-control">
+                <div class="input-group mt-1">
+                    <span class="error-msg text-danger" style="display: none;">
+                        초기 자본을 올바르게 입력해주세요.
+                    </span>
+                </div>
+            </div>
+            <div class="input-group mb-3 w-100">
+                <label for="monthlyInvestment" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                    <span>월 적립액</span>
+                </label>
+                <input type="number" id="monthlyInvestment" class="form-control">
+                <div class="input-group mt-1">
+                    <span class="error-msg text-danger" style="display: none;">
+                        월 적립액을 올바르게 입력해주세요.
+                    </span>
+                </div>
+            </div>
+            <div class="input-group mb-3 w-100">
+                <label for="dividendGoal" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                    <span>월 목표 배당금</span>
+                </label>
+                <input type="number" id="dividendGoal" class="form-control ">
+                <div class="input-group mt-1">
+                    <span class="error-msg text-danger" style="display: none;">
+                        월 목표 배당금을 올바르게 입력해주세요.
+                    </span>
+                </div>
+            </div>
+            <div class="input-group mb-3 w-100">
+                <label for="dividendRate" class="input-group-text col-3 text-bg-primary" id="inputGroup-sizing-default">
+                    <span>배당률</span>
+                </label>
+                <input type="number" id="dividendRate" class="form-control">
+                <div class="input-group mt-1">
+                    <span class="error-msg text-danger" style="display: none;">
+                        배당률을 올바르게 입력해주세요.
+                    </span>
+                </div>
+            </div>
+            <!-- //input -->
+            <div class="d-flex gap-4 w-100 ">
+                <button id="btnCalculation" class="btn btn-primary btn-lg w-50">계산하기</button>
+                <button id="btnCancel" class="btn btn-secondary  btn-lg w-50">초기화</button>
+                <span class="error-msg text-danger" style="display: none;">
+                    초기 자본 또는 월 적립액을 입력해주세요.
+                </span>
+            </div>
+            
+            <div id="resultArea" style="display: none;">
+                <h2 class="container-fluid mt-5">결과</h2>
+                <hr class="border border-primary border-3 opacity-75">
+                
+                <div id="result" class="container-fluid mt-2"></div>
+                
+                <div id="resultDetail" class="mt-5">
+                    <h5 class="container-fluid mt-4">월별 상세</h5>
+                    <hr class="border border-primary border-3 opacity-75">
+                    <table id="resultTable" class="w-100"></table>
+                </div>
+                
+            </div>
+                
+        </div>
+
+        <!-- second section-->
+        <!-- <div class="bg-secondary-subtle w-25" id="secondContainer"></div> -->
+    </div>
 </body>
+
 </html>
